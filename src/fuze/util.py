@@ -12,14 +12,13 @@ import uuid
 import hashlib
 import gzip
 import zlib
-
 from . import const
-from errors import *
-from utilities import *
+from .errors import *
+from .utilities import *
 from .http import *
 from .threads import *
-from io import *
-from crypto import *
+from .io import *
+from .crypto import *
 
 
 

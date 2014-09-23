@@ -1,7 +1,7 @@
-from errors import *
-from utilities import *
-from structs import *
-from io import *
+from .errors import *
+from .utilities import *
+from .structs import *
+from .io import *
 from . import env
 # from . import log
 from . import util
