@@ -6,7 +6,7 @@ with open("requirements.txt") as f:
     dependencies = f.read().splitlines()
 
 with open("readme.txt") as f:
-    readme = f.read().read()
+    readme = f.read()
 
 
 setup(

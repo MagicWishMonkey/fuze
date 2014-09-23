@@ -3,7 +3,7 @@ from utilities import *
 from structs import *
 from io import *
 from . import env
-from . import log
+# from . import log
 from . import util
 from . import const
 from . import types
@@ -13,8 +13,8 @@ import atexit
 
 
 
-terminal = log.terminal()
-trace = lambda *message: terminal.blue(*message)
+# terminal = log.terminal()
+# trace = lambda *message: terminal.blue(*message)
 
 is_win = lambda: env.os.win
 is_osx = lambda: env.os.osx
@@ -28,12 +28,12 @@ is_dict = lambda o: isinstance(o, dict)
 
 
 
-def __destroy__():
-    terminal.whitespace()
+# def __destroy__():
+#     terminal.whitespace()
+# terminal.whitespace()
+# terminal.green()
+# atexit.register(__destroy__)
 
-atexit.register(__destroy__)
-terminal.whitespace()
-terminal.green()
 #atexit.register(App.destroy)
 
 

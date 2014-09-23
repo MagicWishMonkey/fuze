@@ -1,117 +1,118 @@
 from fuze import *
-from fuze.console import Console
+#from fuze.console import Console
 
-import os
-import atexit
-
-
-class Downloader(Console):
-    __temp__ = {}
-
-    def __init__(self, *uri):
-        Console.__init__(self)
-        uri = os.getcwd() if len(uri) == 0 else uri[0]
-        self.folder = util.folder(uri)
-        self.queue = []
-
-        files = self.folder.files(recursive=True)
-        for file in files:
-            if file.kb < 1:
-                uri = file.read_text()
-                if uri.find("/") > -1 and uri.startswith("http://") or uri.startswith("https://") or uri.startswith("www."):
-                    self.queue.append((uri, file))
-
-    def start(self):
-        queue = self.queue
-        def download(total, ix, uri, file, color):
-
-            trace = self.terminal.bind(color)
-
-            name = file.name
-            temp = file.parent.file("%s.tmp" % file.uri)
-            Downloader.__temp__[temp.uri] = temp.uri
-            try:
-                def on_download(temp):
-                    uri = temp.uri
-                    uri = uri[0:len(uri) - 4]
-                    file = temp.parent.file(uri)
-                    temp.move(file, overwrite=True)
-
-                callback = util.curry(on_download, temp)
-
-
-                request = util.request(uri)
-                file_size = request.size
-                tmp_uri = temp.uri
-
-
-                request.download(temp, async=True, callback=callback)
-                while temp.exists is False:
-                    util.sleep(.01)
-
-                #self.clear()
-                counter = 0
-                while True:
-                    if util.file(tmp_uri).exists is False:
-                        break
-
-                    kb = temp.kb
-                    pct = round((kb / file_size), 2) if kb > 0 else 0
-                    if pct > 0:
-                        pct = (pct * float(100))
-
-                    if counter == 0 or counter > 10:
-                        counter = 0
-                        buffer = ["[%s of %s]" % (str(ix + 1), str(total)), " [", str(pct), "%]", " - ", name]
-                        msg = "".join(buffer)
-                        #self.notify(msg)
-                        trace(msg)
-                    counter = (counter + 1)
-                    util.sleep(.25)
-            except Exception, ex:
-                try:
-                    temp.delete()
-                except:
-                    pass
-                raise ex
-            finally:
-                try:
-                    Downloader.__temp__.pop(temp.uri)
-                except:
-                    pass
-
-        colors = self.terminal.color_list
-        colors = [c for c in colors if c != "ul" and c != "white"]
-        total = len(queue)
-        for ix, o in enumerate(queue):
-            uri, file, color = o[0], o[1], None
-            try:
-                color = colors.pop()
-            except:
-                colors = self.terminal.color_list
-                colors = [c for c in colors if c != "ul" and c != "white"]
-                color = colors.pop()
-
-
-            download(total, ix, uri, file, color)
-
-    @staticmethod
-    def cleanup():
-        files = Downloader.__temp__.keys()
-        [util.file(file).delete() for file in files]
-
-    @classmethod
-    def open(cls, *uri):
-        dl = Downloader(*uri)
-        return dl
-
-atexit.register(Downloader.cleanup)
-
+# import os
+# import atexit
+#
+#
+# class Downloader(Console):
+#     __temp__ = {}
+#
+#     def __init__(self, *uri):
+#         Console.__init__(self)
+#         uri = os.getcwd() if len(uri) == 0 else uri[0]
+#         self.folder = util.folder(uri)
+#         self.queue = []
+#
+#         files = self.folder.files(recursive=True)
+#         for file in files:
+#             if file.kb < 1:
+#                 uri = file.read_text()
+#                 if uri.find("/") > -1 and uri.startswith("http://") or uri.startswith("https://") or uri.startswith("www."):
+#                     self.queue.append((uri, file))
+#
+#     def start(self):
+#         queue = self.queue
+#         def download(total, ix, uri, file, color):
+#
+#             trace = self.terminal.bind(color)
+#
+#             name = file.name
+#             temp = file.parent.file("%s.tmp" % file.uri)
+#             Downloader.__temp__[temp.uri] = temp.uri
+#             try:
+#                 def on_download(temp):
+#                     uri = temp.uri
+#                     uri = uri[0:len(uri) - 4]
+#                     file = temp.parent.file(uri)
+#                     temp.move(file, overwrite=True)
+#
+#                 callback = util.curry(on_download, temp)
+#
+#
+#                 request = util.request(uri)
+#                 file_size = request.size
+#                 tmp_uri = temp.uri
+#
+#
+#                 request.download(temp, async=True, callback=callback)
+#                 while temp.exists is False:
+#                     util.sleep(.01)
+#
+#                 #self.clear()
+#                 counter = 0
+#                 while True:
+#                     if util.file(tmp_uri).exists is False:
+#                         break
+#
+#                     kb = temp.kb
+#                     pct = round((kb / file_size), 2) if kb > 0 else 0
+#                     if pct > 0:
+#                         pct = (pct * float(100))
+#
+#                     if counter == 0 or counter > 10:
+#                         counter = 0
+#                         buffer = ["[%s of %s]" % (str(ix + 1), str(total)), " [", str(pct), "%]", " - ", name]
+#                         msg = "".join(buffer)
+#                         #self.notify(msg)
+#                         trace(msg)
+#                     counter = (counter + 1)
+#                     util.sleep(.25)
+#             except Exception, ex:
+#                 try:
+#                     temp.delete()
+#                 except:
+#                     pass
+#                 raise ex
+#             finally:
+#                 try:
+#                     Downloader.__temp__.pop(temp.uri)
+#                 except:
+#                     pass
+#
+#         colors = self.terminal.color_list
+#         colors = [c for c in colors if c != "ul" and c != "white"]
+#         total = len(queue)
+#         for ix, o in enumerate(queue):
+#             uri, file, color = o[0], o[1], None
+#             try:
+#                 color = colors.pop()
+#             except:
+#                 colors = self.terminal.color_list
+#                 colors = [c for c in colors if c != "ul" and c != "white"]
+#                 color = colors.pop()
+#
+#
+#             download(total, ix, uri, file, color)
+#
+#     @staticmethod
+#     def cleanup():
+#         files = Downloader.__temp__.keys()
+#         [util.file(file).delete() for file in files]
+#
+#     @classmethod
+#     def open(cls, *uri):
+#         dl = Downloader(*uri)
+#         return dl
+#
+# atexit.register(Downloader.cleanup)
+#
 
 
 
 def init():
-    Downloader(util.folder("/Users/ron/Downloads/__NS__/TEST").uri).start()
+    #Downloader(util.folder("/Users/ron/Downloads/__NS__/TEST").uri).start()
+    print util.json({"label": "ron"})
     raw_input("...")
     quit()
 
