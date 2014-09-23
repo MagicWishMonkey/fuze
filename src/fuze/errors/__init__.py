@@ -1,1 +1,1 @@
-from .fuze_error import FuzeError
+from fuze.errors.fuze_error import FuzeError

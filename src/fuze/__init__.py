@@ -1,12 +1,12 @@
-from .errors import *
-from .utilities import *
-from .structs import *
-from .io import *
-from . import env
+from fuze.errors import *
+from fuze.utilities import *
+from fuze.structs import *
+from fuze.io import *
+from fuze import env
 # from . import log
-from . import util
-from . import const
-from . import types
+from fuze import util
+from fuze import const
+from fuze import types
 import atexit
 
 

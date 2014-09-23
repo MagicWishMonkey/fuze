@@ -12,13 +12,13 @@ import uuid
 import hashlib
 import gzip
 import zlib
-from . import const
-from .errors import *
-from .utilities import *
-from .http import *
-from .threads import *
-from .io import *
-from .crypto import *
+from fuze import const
+from fuze.errors import *
+from fuze.utilities import *
+from fuze.http import *
+from fuze.threads import *
+from fuze.io import *
+from fuze.crypto import *
 
 
 

@@ -11,7 +11,7 @@ with open("readme.txt") as f:
 
 setup(
     name = "fuze",
-    version = "1.0.0",
+    version = "1.1.0",
     author = "Ron!",
     author_email = "rodenberg@gmail.com",
     description = "A simple framework.",
