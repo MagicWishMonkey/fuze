@@ -1,0 +1,1 @@
+from .fuze_error import FuzeError

@@ -52,3 +52,17 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Ignore the pycharm project file folder
+# syntax: regexp
+# ^\/.idea$
+glob:.idea/*
+
+# Ignore Mac system files
+.DS_Store
+/.DS_Store$
+
+# Ignore any .pyc files (compiled python modules)
+*.pyc
+*.pyo
+*.iml

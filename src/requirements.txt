@@ -1,0 +1,8 @@
+lxml
+simplejson
+pycrypto
+python-dateutil
+requests
+BeautifulSoup
+termcolor
+xlsxwriter
