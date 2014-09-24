@@ -1,4 +1,3 @@
-import os
 from setuptools import setup
 from setuptools import find_packages
 
@@ -15,12 +14,10 @@ setup(
     version = "1.0",
     author = "Ron!",
     author_email = "rodenberg@gmail.com",
-    description = "A simple framework.",
+    description = "The fuze framework.",
     license = "MIT",
     #url = "http://packages.python.org/fuze",
-    #package_dir = {"fuze": "fuze"},
-    #packages=["fuze"],
-    packages=find_packages(),
+    packages=find_packages("fuze"),
     long_description=readme,
     install_requires=dependencies
 )

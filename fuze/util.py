@@ -241,7 +241,7 @@ def unbase36(data):
         raise FuzeError(message, ex)
 
 
-def json(obj, indent=None, sort_keys=True):
+def json(obj, indent=None, sort_keys=True, pretty=False):
     """Convert the object instance into a json blob."""
     assert obj is not None, "The input parameter is null!"
 
@@ -249,6 +249,8 @@ def json(obj, indent=None, sort_keys=True):
         if indent:
             return __json__.dumps(obj, check_circular=False, sort_keys=sort_keys, indent=indent)
         else:
+            if pretty is True:
+                return __json__.dumps(obj, check_circular=False, sort_keys=sort_keys, indent=2)
             return __json__.dumps(obj, check_circular=False, sort_keys=sort_keys)
     except Exception, ex:
         message = "Unable to encode the object to json-> %s" % ex.message
