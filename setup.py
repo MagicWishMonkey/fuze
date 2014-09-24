@@ -14,10 +14,9 @@ setup(
     version = "1.0",
     author = "Ron!",
     author_email = "rodenberg@gmail.com",
-    description = "The fuze framework.",
+    description = "The fuze package.",
     license = "MIT",
-    #url = "http://packages.python.org/fuze",
-    packages=find_packages("fuze"),
+    packages=find_packages(),
     long_description=readme,
     install_requires=dependencies
 )
