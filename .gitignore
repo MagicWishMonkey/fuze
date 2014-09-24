@@ -66,3 +66,6 @@ glob:.idea/*
 *.pyc
 *.pyo
 *.iml
+
+
+debug.py
