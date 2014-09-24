@@ -1,2 +1,2 @@
-from fuze.threads.worker import Worker
+from .worker import Worker
 
