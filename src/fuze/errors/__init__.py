@@ -1,5 +1,4 @@
 #from fuze.errors.fuze_error import FuzeError
-
 import datetime
 
 class FuzeError(Exception):

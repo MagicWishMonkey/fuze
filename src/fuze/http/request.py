@@ -277,7 +277,7 @@ class Request(object):
         return self.__str__()
 
 @Request.plugin
-def download(self, file, async=False, callback=None):
+def download(self, file, async=False, callback=None, block_size=1024):
     try:
         from fuze import util
     except:
@@ -293,6 +293,9 @@ def download(self, file, async=False, callback=None):
 
 
     def __stream__(uri, file, flush_limit=1024, callback=None):
+        if flush_limit is None or flush_limit < 1:
+            flush_limit = 1024
+
         headers = {}
         headers["User-Agent"] = "Mozilla/5.0 Chrome/34.1.2222.1111 Safari/511.56"
         headers["Accept-Encoding"] = "gzip,deflate,compress"
@@ -323,7 +326,7 @@ def download(self, file, async=False, callback=None):
             callback()
 
     uri = self.uri
-    fn = util.curry(__stream__, uri, file, callback=callback)
+    fn = util.curry(__stream__, uri, file, flush_limit=block_size, callback=callback)
     if async is True:
         util.dispatch(fn)
         return self

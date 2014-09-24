@@ -3,14 +3,10 @@ from fuze.utilities import *
 from fuze.structs import *
 from fuze.io import *
 from fuze import env
-# from . import log
 from fuze import util
 from fuze import const
 from fuze import types
 import atexit
-
-
-
 
 
 # terminal = log.terminal()

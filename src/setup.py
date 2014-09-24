@@ -17,6 +17,7 @@ setup(
     description = "A simple framework.",
     license = "MIT",
     url = "http://packages.python.org/wutwut",
+    package_dir = {'': 'src'},
     packages=["fuze"],
     long_description=readme,
     install_requires=dependencies
