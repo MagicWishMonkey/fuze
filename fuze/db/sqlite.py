@@ -1,5 +1,5 @@
 import sqlite3
-from fuze import *
+from fuze import util
 
 
 class SQLite(object):

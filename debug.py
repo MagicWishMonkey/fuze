@@ -1,4 +1,4 @@
-from fuze import *
+from fuze import util
 #from fuze.console import Console
 
 # import os
