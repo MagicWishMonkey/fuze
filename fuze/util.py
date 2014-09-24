@@ -13,13 +13,12 @@ import hashlib
 import gzip
 import zlib
 from fuze import const
-from fuze.errors import *
 from fuze.utilities import *
 from fuze.http import *
 from fuze.threads import *
 from fuze.io import *
 from fuze.crypto import *
-
+from fuze.errors import *
 
 
 
