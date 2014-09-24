@@ -1,5 +1,9 @@
 import os as __os__
-import pwd as __pwd__
+try:
+    import pwd as __pwd__
+except:
+    pass
+
 import socket as __socket__
 import platform as __platform__
 import datetime as __datetime__
@@ -43,7 +47,12 @@ os = Enum("OSX", osx=True, linux=False, win=False) if __os__.name == "posix" \
 
 uid = __os__.getuid()
 uri = __os__.getcwd()
-usr = __pwd__.getpwuid(__os__.getuid())[0]
+usr = None
+try:
+    usr = __pwd__.getpwuid(__os__.getuid())[0]
+except:
+    pass
+
 date = __datetime__.datetime.now()
 debug = __debug__
 machine = __platform__.node()
