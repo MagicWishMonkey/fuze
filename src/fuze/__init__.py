@@ -1,4 +1,4 @@
-from fuze.errors import *
+#from fuze.errors import *
 from fuze.utilities import *
 from fuze.structs import *
 from fuze.io import *
