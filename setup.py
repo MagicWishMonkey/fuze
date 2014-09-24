@@ -1,5 +1,6 @@
 import os
 from setuptools import setup
+from setuptools import find_packages
 
 readme, dependencies = "", []
 with open("requirements.txt") as f:
@@ -11,14 +12,15 @@ with open("readme.txt") as f:
 
 setup(
     name = "fuze",
-    version = "0.0.1",
+    version = "1.0",
     author = "Ron!",
     author_email = "rodenberg@gmail.com",
     description = "A simple framework.",
     license = "MIT",
-    url = "http://packages.python.org/wutwut",
+    #url = "http://packages.python.org/fuze",
     #package_dir = {"fuze": "fuze"},
-    packages=["fuze"],
+    #packages=["fuze"],
+    packages=find_packages(),
     long_description=readme,
     install_requires=dependencies
 )
