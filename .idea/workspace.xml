@@ -30,8 +30,8 @@
       <file leaf-file-name="env.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/fuze/env.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.80665815" vertical-offset="180" max-vertical-offset="1170">
-              <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.36491677" vertical-offset="390" max-vertical-offset="1200">
+              <caret line="45" column="0" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -668,12 +668,12 @@
       <workItem from="1411420898982" duration="1751000" />
       <workItem from="1411483479444" duration="527000" />
       <workItem from="1411484093466" duration="5388000" />
-      <workItem from="1411522437928" duration="6419000" />
+      <workItem from="1411522437928" duration="6524000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="28659000" />
+    <option name="totallyTimeSpent" value="28764000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="4" y="22" width="1436" height="878" extended-state="6" />
@@ -1196,8 +1196,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/fuze/env.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.80665815" vertical-offset="180" max-vertical-offset="1170">
-          <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.36491677" vertical-offset="390" max-vertical-offset="1200">
+          <caret line="45" column="0" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
           <folding />
         </state>
       </provider>

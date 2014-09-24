@@ -44,10 +44,12 @@ os = Enum("OSX", osx=True, linux=False, win=False) if __os__.name == "posix" \
     else Enum("Windows", osx=False, linux=False, win=True) if __os__.name == "nt" \
     else Enum("Linux", osx=False, linux=True, win=False)
 
-
-uid = __os__.getuid()
-uri = __os__.getcwd()
-usr = None
+uid, uri, usr = None, None, None
+try:
+    uid = __os__.getuid()
+    uri = __os__.getcwd()
+except:
+    pass
 try:
     usr = __pwd__.getpwuid(__os__.getuid())[0]
 except:
