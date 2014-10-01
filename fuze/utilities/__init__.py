@@ -6,3 +6,4 @@ from .growl import *
 from .text import *
 from .shell import *
 from .network import *
+from fuze.utilities.clipboard import Clipboard

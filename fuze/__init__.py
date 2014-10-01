@@ -4,7 +4,7 @@ from fuze.structs import *
 from fuze.io import *
 from fuze import env
 from fuze import util
-from fuze import const
+# from fuze import const
 from fuze import types
 import atexit
 

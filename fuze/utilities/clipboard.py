@@ -1,13 +1,18 @@
-class Clipboard:
-    __instance__ = None
+import os
+import platform
+try:
+    import ctypes
+except:
+    pass
+
+
+class Clipboard(object):
+    __functions__ = {}
 
     def __init__(self):
-        if Clipboard.__instance__ is None:
-            Clipboard.__instance__ = self
-
-            import platform, os
-            if os.name == 'nt' or platform.system() == 'Windows':
-                import ctypes
+        functions = Clipboard.__functions__
+        if len(functions) == 0:
+            if os.name == "nt" or platform.system() == "Windows":
                 def winGetClipboard():
                     ctypes.windll.user32.OpenClipboard(0)
                     pcontents = ctypes.windll.user32.GetClipboardData(1) # 1 is CF_TEXT
@@ -35,10 +40,9 @@ class Clipboard:
                     ctypes.windll.kernel32.GlobalUnlock(hCd)
                     ctypes.windll.user32.SetClipboardData(1,hCd)
                     ctypes.windll.user32.CloseClipboard()
-                self.getter = winGetClipboard
-                self.setter = winSetClipboard
-
-            elif os.name == 'mac' or platform.system() == 'Darwin':
+                functions["get"] = winGetClipboard
+                functions["set"] = winSetClipboard
+            elif os.name == "mac" or platform.system() == "Darwin":
                 def macSetClipboard(text):
                     outf = os.popen('pbcopy', 'w')
                     outf.write(text)
@@ -50,53 +54,41 @@ class Clipboard:
                     outf.close()
                     return content
 
-                self.getter = macGetClipboard
-                self.setter = macSetClipboard
-            elif os.name == 'posix' or platform.system() == 'Linux':
+                functions["get"] = macGetClipboard
+                functions["set"] = macSetClipboard
+            else: #posix or linux
                 xclipExists = os.system('which xclip') == 0
                 if xclipExists:
-                    self.getter = xclipGetClipboard
-                    self.setter = xclipSetClipboard
+                    functions["get"] = xclipGetClipboard
+                    functions["set"] = xclipSetClipboard
                 else:
                     xselExists = os.system('which xsel') == 0
                     if xselExists:
-                        self.getter = xselGetClipboard
-                        self.setter = xselSetClipboard
+                        functions["get"] = xselGetClipboard
+                        functions["set"] = xselSetClipboard
                     try:
                         import gtk
-                        self.getter = gtkGetClipboard
-                        self.setter = gtkSetClipboard
+                        functions["get"] = gtkGetClipboard
+                        functions["set"] = gtkSetClipboard
                     except:
                         try:
                             import PyQt4.QtCore
                             import PyQt4.QtGui
                             app = QApplication([])
                             cb = PyQt4.QtGui.QApplication.clipboard()
-                            self.getter = qtGetClipboard
-                            self.setter = qtSetClipboard
+                            functions["get"] = qtGetClipboard
+                            functions["set"] = qtSetClipboard
                         except:
-                            raise Exception('Pyperclip requires the gtk or PyQt4 module installed, or the xclip command.')
+                            pass
 
-    @staticmethod
-    def instance():
-        clipboard = Clipboard.__instance__
-        if clipboard is not None:
-            return clipboard
-        clipboard = Clipboard()
-        return clipboard
+        self.get = functions["get"]
+        self.set = functions["set"]
 
     @staticmethod
     def read():
-        return Clipboard.instance().getter()
+        txt = Clipboard().get()
+        return txt
 
     @staticmethod
-    def write(o):
-        Clipboard.instance().setter(o)
-
-
-def read():
-    return Clipboard.read()
-
-
-def write(o):
-    Clipboard.write(o)
+    def write(txt):
+        Clipboard().set(txt)

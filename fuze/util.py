@@ -22,18 +22,18 @@ from .errors import *
 
 
 
-# def web_get(uri, *headers):
-#     if len(headers) > 0:
-#         headers = list(headers)
-#
-#     headers = list(headers) if len(headers) > 0 else []
-#     headers.append(('User-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36'))
-#
-#     opener = urllib2.build_opener()
-#     opener.addheaders = headers
-#     response = opener.open(uri)
-#     data = response.read()
-#     return data
+def web_get(uri, *headers):
+    if len(headers) > 0:
+        headers = list(headers)
+
+    headers = list(headers) if len(headers) > 0 else []
+    headers.append(('User-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/530.33 (KHTML, like Gecko) Chrome/1.2.3.4 Safari/555.44'))
+
+    opener = urllib2.build_opener()
+    opener.addheaders = headers
+    response = opener.open(uri)
+    data = response.read()
+    return data
 
 
 def request(uri, *headers):
