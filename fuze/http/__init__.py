@@ -1,1 +1,2 @@
-from fuze.http.request import Request
+from .uri import Uri
+from .request import Request
