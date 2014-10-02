@@ -31,7 +31,7 @@ class Uri(object):
         query_string = None
         if len(parts) > 1:
             uri = parts[0]
-            self.__uri__ = uri
+            #self.__uri__ = uri
             query_string = "?".join(parts[1:])
 
         domain, path, port = None, None, None
@@ -94,7 +94,6 @@ class Uri(object):
             if k.lower() == key.lower():
                 return o[1]
         return None
-
 
     def quote(self, *args):
         if len(args) == 0:
