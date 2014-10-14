@@ -2,7 +2,9 @@
     "application": {
         "name": "Fuze",
         "environment": "Dev",
-        "administrators": "Willy Wonka <willy.wonka@gmail.com>"
+        "administrators": [
+            "Willy Wonka <willy.wonka@gmail.com>"
+        ]
     },
     "flags": {
         "quarantine": true,

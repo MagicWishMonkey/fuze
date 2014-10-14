@@ -152,3 +152,87 @@ class Wrapper(dict):
         if args and len(args) > 0:
             return Wrapper(args[0])
         return Wrapper(kwargs)
+
+
+
+class Flags(dict):
+    def __getattr__(self, key):
+        try:
+            return self[key]
+        except KeyError:
+            try:
+                k = key.strip().lower()
+                if k == key:
+                    return False
+                for key in self:
+                    if key.strip().lower() == k:
+                        return self[key]
+                return False
+            except:
+                pass
+            return False
+
+    def __setattr__(self, key, value):
+        flag = Flags.parse_bool(value)
+        self[key] = flag
+
+    def __delattr__(self, key):
+        try:
+            del self[key]
+        except KeyError:
+            pass
+
+    def clone(self):
+        return self.copy()
+
+    def bind(self, **kwd):
+        if len(kwd) > 0:
+            for k in kwd:
+                v = kwd[k]
+                self[k] = Flags.__parse_bool__(v)
+        return self
+
+    @staticmethod
+    def __parse_bool__(val):
+        if val is True:
+            return True
+        if val == 1:
+            return True
+        if isinstance(val, basestring) is True:
+            txt = val.strip().lower()
+            if txt == "y" or txt == "yes":
+                return True
+            if txt == "1" or txt == "true":
+                return True
+            return False
+        return False
+
+    @staticmethod
+    def create(*args, **kwd):
+        flags = Flags()
+        if args:
+            for arg in args:
+                if isinstance(arg, (list, tuple)) is True and len(arg) > 1:
+                    k, v = arg[0], arg[1]
+                    if isinstance(k, basestring) is True:
+                        flags[k] = Flags.__parse_bool__(v)
+
+        if args and len(args) > 0:
+            return Wrapper(args[0])
+        if len(kwd) > 0:
+            for k in kwd:
+                v = kwd[k]
+                flags[k] = Flags.__parse_bool__(v)
+        return flags
+
+
+    def __str__(self):
+        buffer = []
+        for k in self:
+            v = self[k]
+            buffer.append("%s=%s" % (str(k), str(v)))
+        txt = "&".join(buffer)
+        return txt
+
+    def __repr__(self):
+        return self.__str__()

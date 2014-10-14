@@ -11,7 +11,7 @@ from .io import *
 from .crypto import *
 from .errors import *
 from fuze import types
-
+from fuze.utilities.emails import EmailAddress, DomainName
 
 def reflector():
     return Reflector()
@@ -432,13 +432,11 @@ def context():
 
 
 def is_email(email):
-    print "TODO: Fix the email parser."
-    return True
+    return EmailAddress.is_valid(email)
 
 
 def format_email(email):
-    print "TODO: Fix the email parser."
-    return email.strip().lower()
+    return EmailAddress.format(email)
 
 # def gzcompress(data, compression_level=9):
 #     assert data is not None, "The data parameter is null!"

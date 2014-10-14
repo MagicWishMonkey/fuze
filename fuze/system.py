@@ -10,6 +10,8 @@ import platform as __platform__
 import datetime as __datetime__
 from fuze.structs.containers import Wrapper as __Wrapper__
 from fuze.structs.containers import SelfWrapper as __SelfWrapper__
+from fuze.structs.containers import Flags as __Flags__
+from fuze.structs.person import Person as __Person__
 from fuze.structs.enums import Enum as __Enum__
 from fuze.io.file import File as __File__
 from fuze.utilities.stopwatch import Stopwatch as __Stopwatch__
@@ -77,7 +79,8 @@ except:
 # except:
 #     pass
 
-
+self.flags = __Flags__()
+self.admins = []
 self.app_data = None
 self.settings = None
 self.application = None
@@ -93,6 +96,9 @@ try:
     settings_override = settings_override.read(__util__.unjson)
     settings_override = __util__.wrap(settings_override)
     settings.override(settings_override)
+    self.flags.bind(**(settings.flags))
+    if self.flags.quarantine is True:
+        self.quarantine = True
 
     if settings.application.quarantine is True:
         self.quarantine = True
@@ -100,9 +106,20 @@ try:
     self.settings = settings
     self.application = settings.application.name
     self.environment = settings.application.environment
-except:
-    pass
 
+    admins = settings.application.administrators
+    if admins:
+        if isinstance(admins, list) is False:
+            admins = [admins]
+        for admin in admins:
+            person = __Person__.parse(admin)
+            if person is not None:
+                if person.email is not None:
+                    if person.email.valid is True:
+                        self.admins.append(person)
+except Exception, ex:
+    message = "Error initializing settings: %s" % ex.message
+    print message
 
 self.uptime = __Reflector__.curry(__uptime__, self)
 
