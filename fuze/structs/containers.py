@@ -1,3 +1,73 @@
+from types import ModuleType
+
+
+class SelfWrapper(ModuleType):
+    def __init__(self, self_module, baked_args={}, label=None):
+        # this is super ugly to have to copy attributes like this,
+        # but it seems to be the only way to make reload() behave
+        # nicely.  if i make these attributes dynamic lookups in
+        # __getattr__, reload sometimes chokes in weird ways...
+        for attr in ["__builtins__", "__doc__", "__name__", "__package__"]:
+            setattr(self, attr, getattr(self_module, attr, None))
+
+        # python 3.2 (2.7 and 3.3 work fine) breaks on osx (not ubuntu)
+        # if we set this to None.  and 3.3 needs a value for __path__
+        self.__path__ = []
+        self.self_module = self_module
+        self.__readonly__ = False
+
+        if label is None:
+            label = self_module.__name__
+            try:
+                if self.self_module.__class__.__name__ != "module":
+                    label = self.self_module.__class__.__name__
+            except:
+                pass
+
+        self.__label__ = label
+
+
+
+
+    def seal(self):
+        """
+        Make the wrapper read only, will throw an exception
+        when an attribute is assigned or updated.
+        """
+        self.__readonly__ = True
+        return self
+
+
+    def __setattr__(self, name, value):
+        if hasattr(self, "__readonly__"):
+            if self.__readonly__ is True:
+               raise Exception("This wrapper is marked as read only, it cannot be updated.")
+
+        ModuleType.__setattr__(self, name, value)
+
+    # def __getattr__(self, name):
+    #     #if name == "env": raise AttributeError
+    #     return self.__attrs__[name]
+
+    # accept special keywords argument to define defaults for all operations
+    # that will be processed with given by return SelfWrapper
+    def __call__(self, **kwargs):
+        return SelfWrapper(self.self_module, kwargs)
+
+    def __repr__(self):
+        label = None
+        try:
+            label = self.__label__
+        except:
+            pass
+
+        if label is None:
+            label = "SelfWrapper"
+        return label
+
+    def __str__(self):
+        return self.__repr__()
+
 
 
 class Wrapper(dict):

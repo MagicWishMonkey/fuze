@@ -4,6 +4,7 @@ from os.path import expanduser
 from fuze.io import tools
 from fuze.io.abstract import IOError
 from fuze.io.abstract import FSEntry
+from fuze.io.file_types import FileType
 
 
 
@@ -81,7 +82,9 @@ class File(FSEntry):
 
     def read(self, *fn, **kwd):
         """Open the file handle and return the contents back out."""
-        return tools.read(self.uri, *fn, **kwd)
+        if self.is_text_file is True:
+            return self.read_text(*fn, **kwd)
+        return self.read_data(*fn, **kwd)
 
     def read_data(self, *fn):
         return tools.read_data(self.uri, *fn)
@@ -240,7 +243,20 @@ class File(FSEntry):
     # #        return 0
     # #    return chronos.age(date)
 
+    @property
+    def file_type(self):
+        return FileType.find(self.ext)
 
+    @property
+    def is_binary_file(self):
+        try:
+            return self.file_type.binary
+        except:
+            return True
+
+    @property
+    def is_text_file(self):
+        return True if self.is_binary_file is False else False
 
 class FileStream(object):
     def __init__(self, file, append=False, text_mode=True, encoding="utf-8"):

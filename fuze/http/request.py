@@ -401,6 +401,64 @@ def execute(self, ignore_errors=False, formatter=None):
     return response_content
 
 
+@Request.plugin
+def download(self, file, async=False, callback=None, block_size=1024):
+    try:
+        from fuze import util
+    except:
+        message = "Unable to import the fuze util module."
+        raise Exception(message)
+
+    if isinstance(file, basestring) is False:
+        try:
+            file = file.uri
+        except Exception, ex:
+            message = "Invalid file parameter! %s" % ex.message
+            raise Exception(message)
+
+
+    def __stream__(uri, file, flush_limit=1024, callback=None):
+        if flush_limit is None or flush_limit < 1:
+            flush_limit = 1024
+
+        headers = {}
+        headers["User-Agent"] = "Mozilla/5.0 Chrome/34.1.2222.1111 Safari/511.56"
+        headers["Accept-Encoding"] = "gzip,deflate,compress"
+        headers["Accept-Language"] = "en-US,en;q=0.8"
+        headers["Referer"] = "https://www.google.com/"
+        headers["Accept"] = "*/*"
+        request = requests.get(uri, headers=headers, timeout=120, stream=True)
+
+        try:
+            bytes_total = 0
+            flush_count = 0
+            with open(file, 'wb') as f:
+                for chunk in request.iter_content(chunk_size=10240):
+                    if chunk is not None: # filter out keep-alive new chunks
+                        f.write(chunk)
+                        cnt = (len(chunk) * 1024)
+                        bytes_total = (bytes_total + cnt)
+                        flush_count = (flush_count + cnt)
+                        if flush_count > flush_limit:
+                            flush_count = 0
+                            f.flush()
+        except Exception, ex:
+            message = "Error downloading the file: %s" % ex.message
+            print message
+            raise Exception(message)
+
+        if callback is not None:
+            callback()
+
+    uri = self.uri
+    fn = util.curry(__stream__, uri, file, flush_limit=block_size, callback=callback)
+    if async is True:
+        util.dispatch(fn)
+        return self
+
+    fn()
+    return self
+
 
 # def GET(self, *fmt):
 #     self.method = "GET"

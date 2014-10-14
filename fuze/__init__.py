@@ -2,18 +2,26 @@
 from fuze.utilities import *
 from fuze.structs import *
 from fuze.io import *
-from fuze import env
+from fuze import system
 from fuze import util
-# from fuze import const
 from fuze import types
+from fuze import system
+from fuze.log import Logger
+from fuze.app import App
 import atexit
+
+
+app = App.get()
+logger = Logger.get()
+trace = lambda *message: Logger.get().trace(*message)
+debug = lambda *message: Logger.get().debug(*message)
 
 
 # terminal = log.terminal()
 # trace = lambda *message: terminal.blue(*message)
 
-is_win = lambda: env.os.win
-is_osx = lambda: env.os.osx
+is_win = lambda: system.os.win
+is_osx = lambda: system.os.osx
 
 empty = lambda o: True if not o else False
 is_str = lambda o: isinstance(o, basestring)

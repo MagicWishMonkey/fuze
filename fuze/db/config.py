@@ -1,8 +1,9 @@
 
 
 class Config(object):
-    def __init__(self, driver=None, uri=None, database=None,
+    def __init__(self, label=None, driver=None, uri=None, database=None,
                  username=None, password=None, port=None, pool_size=None, params=None):
+        self.__label = label
         self.__driver = driver.strip().lower()
         self.__uri = uri if uri else "localhost"
         self.__database = database
@@ -67,8 +68,20 @@ class Config(object):
     def pool_size(self):
         return self.__pool_size
 
+    @property
+    def label(self):
+        label = self.__label
+        if label is None:
+            driver = self.driver
+            server = self.server
+            database = self.database
+            label = "%s#%s@%s" % (driver, database, server)
+            self.__label = label
+        return label
+
     def deflate(self):
         return {
+            "label": self.__label,
             "driver": self.__driver,
             "uri": self.__uri,
             "database": self.__database,
@@ -81,6 +94,7 @@ class Config(object):
     @staticmethod
     def inflate(obj):
         return Config(
+            label=obj["label"],
             driver=obj["driver"],
             uri=obj["uri"],
             database=obj["database"],

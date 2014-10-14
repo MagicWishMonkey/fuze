@@ -190,26 +190,38 @@ class Wrapper(dict):
     #     return None
 
 
+    # def override(self, other):
+    #     def override(a, b):
+    #         keys = b.keys()
+    #         for key in keys:
+    #             o = b[key]
+    #             if isinstance(o, dict) is True:
+    #                 i = a[key]
+    #                 for k in o.keys():
+    #                     i[k] = o[k]
+    #             else:
+    #                 a[key] = o
+    #
+    #     override(self, other)
+    #     return self
+
     def override(self, other):
         def override(a, b):
             keys = b.keys()
             for key in keys:
                 o = b[key]
                 if isinstance(o, dict) is True:
-                    i = a[key]
-                    for k in o.keys():
-                        i[k] = o[k]
+                    try:
+                        i = a[key]
+                        for k in o.keys():
+                            i[k] = o[k]
+                    except KeyError:
+                        a[key] = o
                 else:
                     a[key] = o
 
         override(self, other)
         return self
-
-        # keys = other.keys()
-        # for key in keys:
-        #     v = other[key]
-        #     self[key] = v
-        # return self
 
     def __getattr__(self, key):
         try:

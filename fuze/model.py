@@ -1,32 +1,22 @@
 from fuze import *
-from fuze.types import Registry
+from fuze.types import IModel
+from fuze.types import MetaModel
+# from fuze.types import TypeTable
 
 
 
-class MetaModel(type):
-    def __new__(meta, name, bases, dct):
-        return super(MetaModel, meta).__new__(meta, name, bases, dct)
-
-    def __init__(cls, name, bases, dct):
-        if name != "Model":
-            Registry.register(cls)
-
-        # # #instance = cls()
-        # # #if isinstance(instance, IModel) is True:
-        # # schema = cls.schema
-        # # fields = schema.keys()
-        # # slots = cls.__slots__
-        # # for field in fields:
-        # #     slots.append(field)
-        # # #fields = slots
-        # # #schema = {}
-        # # #cls.__slots__ = fields
-        # Registry.set(cls, name, cls.TAG)
-
-        super(MetaModel, cls).__init__(name, bases, dct)
+# class MetaModel(type):
+#     def __new__(meta, name, bases, dct):
+#         return super(MetaModel, meta).__new__(meta, name, bases, dct)
+#
+#     def __init__(cls, name, bases, dct):
+#         if name != "Model":
+#             TypeTable.register(cls)
+#
+#         super(MetaModel, cls).__init__(name, bases, dct)
 
 
-class Model(object):
+class Model(IModel):
     __metaclass__ = MetaModel
     __slots__ = []
 
@@ -44,6 +34,25 @@ class Model(object):
             slot = slots[x]
             val = kwd.get(slot, defaults.get(slot, None))
             setter(slot, val)
+
+    def deflate(self):
+        table = {}
+
+        slots = self.__slots__
+        cnt = len(slots)
+        getter = self.__getattr__
+        for x in xrange(cnt):
+            slot = slots[x]
+            val = getter(self, slot)
+            # if isinstance(val, list) is True:
+            #     if len(val) > 0:
+            #         if isinstance(val[0], IModel) is True:
+            #             val = [v.deflate() for v in val]
+            # elif isinstance(val, IModel) is True:
+            #     val = val.deflate()
+            table[slot] = val
+        return table
+
 
     @property
     def model_type(self):
@@ -66,6 +75,15 @@ class Model(object):
             return cls(**kwd)
         except Exception, ex:
             raise ex
+
+    @property
+    def ctx(self):
+        return util.context()
+
+    @property
+    def repository(self):
+        cls = self.repository_class
+        return cls(self.ctx)
 
     def __str__(self):
         type = self.__class__.__name__
@@ -94,9 +112,9 @@ class Model(object):
         return self.__str__()
 
 
-class Member(Model):
-    __slots__ = [
-        "id",
-        "label"
-    ]
+# class Member(Model):
+#     __slots__ = [
+#         "id",
+#         "label"
+#     ]
 

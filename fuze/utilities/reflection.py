@@ -5,7 +5,23 @@ import hashlib
 import inspect
 
 
+
+
+
 class Reflector:
+
+    @staticmethod
+    def rcurry(f, *a, **kw):
+        def curried(*more_a, **more_kw):
+            return f(*(more_a + a), **dict(kw, **more_kw))
+        return curried
+
+    @staticmethod
+    def curry(f, *a, **kw):
+        def curried(*more_a, **more_kw):
+            return f(*(a + more_a), **dict(kw, **more_kw))
+        return curried
+
     def compile(self, script):
         def indent(txt):
             padding = "    "

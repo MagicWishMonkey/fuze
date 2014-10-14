@@ -1,4 +1,37 @@
-# from __future__ import print_function
+from __future__ import print_function
+
+
+
+class Logger(object):
+    __instance__ = None
+
+    def __init__(self):
+        self.level = None
+
+    def debug(self, *message):
+        print("debug...")
+
+    def trace(self, *message):
+        print("trace...")
+
+    def info(self, *message):
+        print("info...")
+
+    def warn(self, *message):
+        print("warn...")
+
+    def error(self, *message):
+        print("error...")
+
+
+    @staticmethod
+    def get():
+        return Logger.__instance__
+
+
+Logger.__instance__ = Logger()
+
+
 # import os
 # from . import env
 # from .types import Wrapper

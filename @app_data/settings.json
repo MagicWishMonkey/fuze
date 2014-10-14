@@ -1,0 +1,47 @@
+{
+    "application": {
+        "name": "Fuze",
+        "environment": "Dev",
+        "administrators": "Willy Wonka <willy.wonka@gmail.com>"
+    },
+    "flags": {
+        "quarantine": true,
+        "debug": false,
+        "emails": false
+    },
+    "keychain":{
+        "salt": "61b197a1bdbf1c2db8eb48edbbc9f53b",
+        "weak": "THIS_IS_MY_WEAK_KEY_APPLE_BETA?!",
+        "strong": "3a1d45b62e614e58a0ecde0bc65f4f53",
+        "hmac": "d63957cd"
+    },
+    "directories": {
+        "queries": "queries",
+        "emails": "emails"
+    },
+    "databases": {
+        "default": {
+            "driver": "mysql",
+            "server": "localhost",
+            "port": 3306,
+            "database": "test",
+            "username": "test",
+            "password": "abc123",
+            "pool_size": 10
+        },
+        "redis": {
+            "driver": "redis",
+            "server": "localhost",
+            "database": "1",
+            "port": 6379,
+            "pool": 100
+        }
+    },
+    "email": {
+        "default_sender": "Willy Wonka <willy.wonka@gmail.com>",
+        "server": "smtp.gmail.com",
+        "port": 587,
+        "username": "willy.wonka",
+        "password": "wonkawonka"
+    }
+}

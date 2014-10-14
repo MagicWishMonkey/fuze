@@ -10,7 +10,7 @@ from .threads import *
 from .io import *
 from .crypto import *
 from .errors import *
-
+from fuze import types
 
 
 def reflector():
@@ -385,6 +385,7 @@ def sleep(*seconds):
     seconds = 0.01 if len(seconds) == 0 else seconds[0]
     time.sleep(seconds)
 
+
 def stopwatch():
     return Stopwatch()
 
@@ -424,6 +425,20 @@ def chunks(lst, cnt, *filter):
     if len(buffer) > 0:
         yield buffer
 
+
+def context():
+    from fuze.context import Context
+    return Context.current()
+
+
+def is_email(email):
+    print "TODO: Fix the email parser."
+    return True
+
+
+def format_email(email):
+    print "TODO: Fix the email parser."
+    return email.strip().lower()
 
 # def gzcompress(data, compression_level=9):
 #     assert data is not None, "The data parameter is null!"
@@ -485,7 +500,6 @@ zlib = toolkit.zlib
 unzlib = toolkit.unzlib
 compress = toolkit.compress
 decompress = toolkit.decompress
-
 trace = toolkit.log.trace
 
 
@@ -508,4 +522,31 @@ def inflate(data):
     return o
 
 
+
+
+def sql_sanitize(sql):
+    """Sanitize the sql statement, replace naughty characters and whatnot."""
+    print "TODO: implement the sql sanitize function"
+    return sql
+
+
+
+################################################################
+## TYPE CHECKING
+################################################################
+is_string = types.is_string
+not_string = types.not_string
+is_list = types.is_list
+not_list = types.not_list
+is_num = types.is_num
+not_num = types.not_num
+is_blank = types.is_blank
+not_blank = types.not_blank
+is_function = types.is_function
+is_class = types.is_class
+not_class = types.not_class
+is_model = types.is_model
+
+parse_bool = types.parse_bool
+parse_int = types.parse_int
 

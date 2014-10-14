@@ -1,4 +1,7 @@
 from fuze.db.config import Config
+from fuze.db.query import Query
+from fuze.db.query_batch import QueryBatch
+from fuze import util
 from sqlalchemy import text
 from sqlalchemy import create_engine
 
@@ -16,11 +19,12 @@ class Database(object):
 
     @property
     def label(self):
-        driver = self.config.driver
-        server = self.config.server
-        database = self.config.database
-        label = "%s#%s@%s" % (driver, database, server)
-        return label
+        return self.config.label
+        # driver = self.config.driver
+        # server = self.config.server
+        # database = self.config.database
+        # label = "%s#%s@%s" % (driver, database, server)
+        # return label
 
     @property
     def engine(self):
@@ -39,6 +43,8 @@ class Database(object):
         self.__engine = engine
         return engine
 
+    def clone(self):
+        return Database(self.config)
 
     # def __execute(self, query, select=False, stream=None):
     #     assert query is not None, "The query parameter is null!"
@@ -147,12 +153,111 @@ class Database(object):
         return Connection(self, use_txn=use_txn)
 
     def select(self, sql, **params):
-        with self.enter() as conn:
+        with self.enter(use_txn=False) as conn:
             return conn.select(sql, **params)
 
     def insert(self, sql, **params):
-        with self.enter() as conn:
+        with self.enter(use_txn=True) as conn:
             return conn.execute(sql, **params)
+
+    def update(self, sql, **params):
+        with self.enter(use_txn=True) as conn:
+            return conn.execute(sql, **params)
+
+    def delete(self, sql, **params):
+        with self.enter(use_txn=True) as conn:
+            return conn.execute(sql, **params)
+
+    def execute(self, sql, **params):
+        with self.enter(use_txn=True) as conn:
+            return conn.execute(sql, **params)
+
+    def query_buffer(self):
+        return QueryBatch.create(self)
+
+    # def __fetch_query(self, sql, ctx):
+    #     qry = None
+    #     if sql.strip().find(' ') == -1:
+    #         try:
+    #             qry = self._queries.get(sql)
+    #         except Exception, ex:
+    #             #raise ex.extend(DatabaseException(None,self))
+    #             raise ex
+    #     else:
+    #         key = tools.hash(sql.strip().lower())
+    #         qry = self._queries.try_get(key)
+    #         if qry is None:
+    #             if qry is None:
+    #                 qry = Query.new(sql)
+    #                 self._queries.register(key, qry.clone())
+    #
+    #     qry.db = self
+    #     qry.ctx = ctx
+    #     return qry
+    #
+    # def query(self, *args, **params):
+    #     sql = args[0]
+    #     qry = self.__fetch_query(sql, None)
+    #     if len(args) > 1:
+    #         args = args[1]
+    #         qry.bind(args)
+    #     elif len(params.keys()) > 0:
+    #         qry.bind(params)
+    #     return qry
+
+    def query(self, *args, **params):
+        sql = args[0]
+
+        allow_cache = False
+        sql = sql.strip()
+        if sql.find(" ") == -1:
+            #this is a file based query
+            allow_cache = True
+        elif sql.find("@") > -1:
+            allow_cache = True
+
+        key = None
+        if allow_cache is True:
+            key = util.hash(sql)
+            print "TODO: add cache table for fetching queries!"
+
+        qry = Query.create(sql)
+        if allow_cache is True:
+            qry.key = key
+            print "TODO: add cache table for saving queries!"
+
+
+        if len(args) > 1:
+            qry.bind(args[1])
+        elif len(params) > 0:
+            qry.bind(params)
+
+        qry.set_db(self)
+        return qry
+
+
+
+        # if sql.strip().find(' ') == -1:
+        #     try:
+        #         qry = self._queries.get(sql)
+        #     except Exception, ex:
+        #         #raise ex.extend(DatabaseException(None,self))
+        #         raise ex
+        # else:
+        #     key = tools.hash(sql.strip().lower())
+        #     qry = self._queries.try_get(key)
+        #     if qry is None:
+        #         if qry is None:
+        #             qry = Query.new(sql)
+        #             self._queries.register(key, qry.clone())
+
+        qry = self.__fetch_query(sql, None)
+        if len(args) > 1:
+            args = args[1]
+            qry.bind(args)
+        elif len(params.keys()) > 0:
+            qry.bind(params)
+        return qry
 
     @classmethod
     def plugin(cls, plugin):
@@ -167,6 +272,7 @@ class Database(object):
         params = kwd.get("params", {})
         config = Config(
             driver=driver,
+            label=kwd.get("label", None),
             uri=kwd.get("uri", None),
             database=kwd.get("database", None),
             username=kwd.get("username", None),
@@ -188,6 +294,8 @@ class Database(object):
         return cls(db)
 
 
+
+
 class Connection(object):
     __slots__ = ["__db", "__conn", "__txn", "use_txn"]
     def __init__(self, db, use_txn=False):
@@ -205,6 +313,19 @@ class Connection(object):
     def __exit__(self, error_type, error_val, error_tb):
         conn = self.__conn
         txn = self.__txn
+        if txn is not None:
+            if error_val is None:
+                try:
+                    txn.commit()
+                except:
+                    pass
+            else:
+                try:
+                    txn.rollback()
+                except:
+                    pass
+            self.__txn = None
+
         if conn is not None:
             try:
                 conn.close()
@@ -213,22 +334,9 @@ class Connection(object):
             self.__conn = None
 
         if error_val is not None:
-            if txn is not None:
-                try:
-                    txn.rollback()
-                except:
-                    pass
-                self.__txn = None
             type = error_type.__name__
             message = error_val.message
             raise Exception(message)
-
-        if txn is not None:
-            try:
-                txn.commit()
-            except:
-                pass
-            self.__txn = None
 
     def select(self, sql, **params):
         return self.execute(sql, **params)
@@ -237,6 +345,24 @@ class Connection(object):
     #     return self.execute(sql, **params)
 
     def execute(self, sql, **params):
+        if isinstance(sql, basestring) is False:
+            if isinstance(sql, list) is True:
+                queries = sql
+                if len(queries) == 0:
+                    return None
+
+                if self.__txn is None:
+                    self.use_txn = True
+                    self.__txn = self.__conn.begin()
+
+                return map(self.execute, queries)
+            elif isinstance(sql, Query) is True:
+                qry = sql
+                sql = qry.sql
+                params = qry.params
+                if params is None:
+                    params = {}
+
         conn = self.__conn
         sql = text(sql)
         result, records = None, None
