@@ -70,5 +70,6 @@ glob:.idea/*
 *.iml
 
 who/
+@app_data/temp
 settings.override.json
 debug.py

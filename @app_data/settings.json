@@ -17,7 +17,8 @@
     },
     "directories": {
         "queries": "queries",
-        "emails": "emails"
+        "emails": "emails",
+        "temp": "temp"
     },
     "databases": {
         "default": {
