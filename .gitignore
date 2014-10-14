@@ -57,6 +57,8 @@ target/
 # syntax: regexp
 # ^\/.idea$
 glob:.idea/*
+.idea
+
 
 # Ignore Mac system files
 .DS_Store
@@ -67,6 +69,6 @@ glob:.idea/*
 *.pyo
 *.iml
 
-
+who/
+settings.override.json
 debug.py
-.idea
